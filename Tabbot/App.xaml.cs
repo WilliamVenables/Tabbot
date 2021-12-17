@@ -28,7 +28,7 @@ namespace Tabbot {
                 // Need to dispatch to UI thread if performing UI operations
                 Application.Current.Dispatcher.Invoke(delegate {
                     // TODO: Show the corresponding content
-                    MessageBox.Show("Toast activated. Arg 1: " + toastArgs.Argument.Split(';')[1]);
+                    MessageBox.Show("Toast activated. Arg 1: " + toastArgs.Argument.Split(';')[0]);
                 });
             };
 
