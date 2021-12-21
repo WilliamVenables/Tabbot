@@ -35,9 +35,13 @@ namespace Tabbot {
                             new ToastContentBuilder()
                                 .AddText("You did it!")
                                 .AddText("You completed today's goal to " + args[2].Split('=')[1])
+                                .AddArgument("action", "timeComplete")
                                 .Schedule(DateTimeOffset.Now + TimeSpan.FromMinutes(Convert.ToInt32(args[1].Split('=')[1])), toast => {
                                     toast.Group = "Habit Timer";
                                 });
+                            break;
+                        case "action=timeComplete":
+                            // update progress bar
                             break;
                         default:
                             MessageBox.Show("Something went wrong.  Please send a bug report with code: " + args[0], "Error");
