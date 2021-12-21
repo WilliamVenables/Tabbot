@@ -45,19 +45,6 @@ namespace Tabbot {
                 connection.Insert(habit);
             }
 
-            new ToastContentBuilder()
-            .AddText("Hey there!")
-            .AddText("It's time to " + habit.Title)
-            .AddButton(new ToastButton()
-                .SetContent("Snooze")
-                .AddArgument("action", "delay")
-                .SetBackgroundActivation())
-            .AddButton(new ToastButton()
-                .SetContent("Start")
-                .AddArgument("action", "startTimer")
-                .SetBackgroundActivation())
-            .Show();
-
             Close();
         }
     }
