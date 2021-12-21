@@ -40,7 +40,6 @@ namespace Tabbot {
             Habit habit = new(TitleBox.Text, DescBox.Text, days, new TimeSpan(tp_start.Value.Value.Hour, tp_start.Value.Value.Minute, 0), num_duration.Value.Value);
 
             using (SQLiteConnection connection = new(App.dbPath)) {
-                Trace.WriteLine(App.dbPath);
                 connection.CreateTable<Habit>();
                 connection.Insert(habit);
             }

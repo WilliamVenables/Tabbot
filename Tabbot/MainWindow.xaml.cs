@@ -63,63 +63,97 @@ namespace Tabbot {
                     habits.Add(habit.Id, habit);
 
                     Grid container = new();
-                    container.Background = this.Resources["TabbotForeground"] as Brush;
+                    container.Background = Application.Current.Resources["TabbotForeground"] as Brush;
                     container.Margin = new Thickness(10);
 
-                    RowDefinition rowDef1 = new();
-                    RowDefinition rowDef2 = new();
-                    RowDefinition rowDef3 = new();
-                    RowDefinition rowDef4 = new();
+                    container.RowDefinitions.Add(new());
+                    container.RowDefinitions.Add(new());
+                    container.RowDefinitions.Add(new());
+                    container.RowDefinitions.Add(new());
+                    container.RowDefinitions.Add(new());
 
-                    container.RowDefinitions.Add(rowDef1);
-                    container.RowDefinitions.Add(rowDef2);
-                    container.RowDefinitions.Add(rowDef3);
-                    container.RowDefinitions.Add(rowDef4);
-
-                    TextBlock id = new() {
-                        Visibility = Visibility.Collapsed,
-                        Text = habit.Id.ToString()
-                    };
+                    container.ColumnDefinitions.Add(new() { Width = new GridLength(100, GridUnitType.Star) });
+                    container.ColumnDefinitions.Add(new() { Width = new GridLength(50) });
 
                     TextBlock txt_title = new() {
-                        Foreground = this.Resources["TabbotText"] as Brush,
+                        Foreground = Application.Current.Resources["TabbotText"] as Brush,
                         Margin = new Thickness(4, 0, 4, 0),
-                        FontSize = 18,
+                        FontSize = 20,
                         FontWeight = FontWeights.Bold,
                         Text = habit.Title
                     };
                     Grid.SetRow(txt_title, 0);
 
+                    Button btn_deleteHabit = new() {
+                        Foreground = Application.Current.Resources["TabbotText"] as Brush,
+                        Background = Brushes.Transparent,
+                        BorderBrush = Brushes.Transparent,
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        Margin = new Thickness(4, 0, 4, 0),
+                        Padding = new Thickness(4, 0, 4, 0),
+                        FontSize = 16,
+                        Style = Application.Current.Resources["AddHabitStyle"] as Style,
+                        Content = "X",
+                        Tag = habit.Id
+                    };
+                    Grid.SetRow(btn_deleteHabit, 0);
+                    Grid.SetColumn(btn_deleteHabit, 1);
+                    btn_deleteHabit.Click += new RoutedEventHandler(DeleteHabit);
+
                     Separator separator = new() {
-                        Background = this.Resources["TabbotAccent"] as Brush,
+                        Background = Application.Current.Resources["TabbotAccent"] as Brush,
                         Margin = new Thickness(2, 0, 2, 0)
                     };
                     Grid.SetRow(separator, 1);
+                    Grid.SetColumnSpan(separator, 2);
 
                     TextBlock txt_desc = new() {
-                        Foreground = this.Resources["TabbotText"] as Brush,
+                        Foreground = Application.Current.Resources["TabbotText"] as Brush,
                         Margin = new Thickness(4, 0, 4, 0),
-                        FontSize = 18,
+                        FontSize = 16,
                         Text = habit.Description,
                         TextWrapping = TextWrapping.WrapWithOverflow
                     };
                     Grid.SetRow(txt_desc, 2);
+                    Grid.SetColumnSpan(txt_desc, 2);
 
                     TextBlock txt_start = new() {
-                        Foreground = this.Resources["TabbotText"] as Brush,
-                        Margin = new Thickness(4, 8, 4, 8),
-                        FontSize = 18
+                        Foreground = Application.Current.Resources["TabbotText"] as Brush,
+                        Margin = new Thickness(4, 8, 4, 0),
+                        FontSize = 16
                     };
+
                     txt_start.Inlines.Add(new Bold(new Run("Starts at: ")));
                     DateTime time = DateTime.Today.Add(habit.TimeOfDay);
                     txt_start.Inlines.Add(time.ToString("h:mm tt"));
                     Grid.SetRow(txt_start, 3);
+                    Grid.SetColumnSpan(txt_start, 2);
 
-                    container.Children.Add(id);
+                    TextBlock txt_days = new() {
+                        Foreground = Application.Current.Resources["TabbotText"] as Brush,
+                        Margin = new Thickness(4, 0, 4, 0),
+                        FontSize = 16
+                    };
+
+                    foreach (Days value in Enum.GetValues(habit.DaysOfTheWeek.GetType())) {
+                        if (value == Days.None) {
+                            continue;
+                        }
+                        if (habit.DaysOfTheWeek.HasFlag(value)) {
+                            txt_days.Inlines.Add(new Bold(new Run(value.ToString().Substring(0, 1))));
+                        } else {
+                            txt_days.Inlines.Add(value.ToString().Substring(0, 1));
+                        }
+                    }
+                    Grid.SetRow(txt_days, 4);
+                    Grid.SetColumnSpan(txt_desc, 2);
+
                     container.Children.Add(txt_title);
+                    container.Children.Add(btn_deleteHabit);
                     container.Children.Add(separator);
                     container.Children.Add(txt_desc);
                     container.Children.Add(txt_start);
+                    container.Children.Add(txt_days);
 
                     allTab.Children.Add(container);
                 }
@@ -192,6 +226,19 @@ namespace Tabbot {
                         toast.Group = "Habit Reminder";
                     });
             }
+        }
+    
+        private void DeleteHabit(object sender, RoutedEventArgs e) {
+            int habitId = Convert.ToInt32(((Button)sender).Tag);
+
+            using (SQLiteConnection connection = new(App.dbPath)) {
+                Habit toDelete = new Habit();
+                toDelete.Id = habitId;
+
+                connection.Delete(toDelete);
+            }
+
+            UpdateHabits();
         }
     }
 }
