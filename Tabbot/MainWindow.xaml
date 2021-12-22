@@ -11,13 +11,13 @@
             <Button.Content>
                 <Border CornerRadius="5" BorderBrush="{StaticResource TabbotAccent}" BorderThickness="3,3,3,3" Padding="5, 2" Background="{StaticResource TabbotForeground}">
                     <Grid>
-                        <Image Source="Assets\Plus.png" Stretch="None" Margin="0,0,54,0"/>
-                        <TextBlock Text="Add Habit" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="24,0,0,0"/>
+                        <Image Source="{StaticResource TabbotPlus}" Stretch="None" Margin="0,0,54,0"/>
+                        <TextBlock Text="Add Habit" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                     </Grid>
                 </Border>
             </Button.Content>
         </Button>
-        <TabControl Background="{StaticResource TabbotHighlight}" Margin="10, 60, 10, 10">
+        <TabControl Background="{StaticResource TabbotHighlight}" Margin="10, 60, 10, 10" BorderBrush="{StaticResource TabbotHighlight}">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
@@ -32,12 +32,14 @@
                                 </Grid>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Panel" Property="Background" Value="{StaticResource TabbotAccent}" />
-                                        <Setter Property="Foreground" Value="{StaticResource TabbotHighlight}"/>
-                                    </Trigger>
-                                    <Trigger Property="IsSelected" Value="False">
                                         <Setter TargetName="Panel" Property="Background" Value="{StaticResource TabbotHighlight}" />
                                         <Setter Property="Foreground" Value="{StaticResource TabbotText}"/>
+                                        <Setter Property="BorderBrush" Value="{StaticResource TabbotHighlight}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="False">
+                                        <Setter TargetName="Panel" Property="Background" Value="{StaticResource TabbotAccent}" />
+                                        <Setter Property="Foreground" Value="{StaticResource TabbotHighlight }"/>
+                                        <Setter Property="BorderBrush" Value="{StaticResource TabbotHighlight}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -47,7 +49,20 @@
             </TabControl.Resources>
             <TabItem x:Name="tab_all" Header="All">
                 <ScrollViewer x:Name="sv_habitsAll" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer.Resources>
+                        <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ScrollBarStyle}"></Style>
+                    </ScrollViewer.Resources>
                     <StackPanel x:Name="sp_habitsAll" Orientation="Vertical">
+
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem x:Name="tab_today" Header="Today">
+                <ScrollViewer x:Name="sv_habitsToday" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer.Resources>
+                        <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ScrollBarStyle}"></Style>
+                    </ScrollViewer.Resources>
+                    <StackPanel x:Name="sp_habitsToday" Orientation="Vertical">
 
                     </StackPanel>
                 </ScrollViewer>

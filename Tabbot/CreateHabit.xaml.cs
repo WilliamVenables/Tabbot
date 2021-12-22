@@ -20,12 +20,41 @@ namespace Tabbot {
     /// Interaction logic for CreateHabit.xaml
     /// </summary>
     public partial class CreateHabit : Window {
-
+        bool create = true;
+        int updateID = 0;
 
         public CreateHabit() {
             InitializeComponent();
 
+            create = true;
+
             DataContext = this;
+        }
+
+        public CreateHabit(int id) {
+            InitializeComponent();
+
+            create = false;
+            updateID = id;
+
+            using (SQLiteConnection connection = new(App.dbPath)) {
+                Habit h = connection.Get<Habit>(updateID);
+
+                TitleBox.Text = h.Title;
+                DescBox.Text = h.Description;
+
+                cb_sun.IsChecked = h.DaysOfTheWeek.HasFlag(Days.Sunday);
+                cb_mon.IsChecked = h.DaysOfTheWeek.HasFlag(Days.Monday);
+                cb_tue.IsChecked = h.DaysOfTheWeek.HasFlag(Days.Tuesday);
+                cb_wed.IsChecked = h.DaysOfTheWeek.HasFlag(Days.Wednesday);
+                cb_thu.IsChecked = h.DaysOfTheWeek.HasFlag(Days.Thursday);
+                cb_fri.IsChecked = h.DaysOfTheWeek.HasFlag(Days.Friday);
+                cb_sat.IsChecked = h.DaysOfTheWeek.HasFlag(Days.Saturday);
+
+                tp_start.Value = DateTime.Today.AddHours(h.TimeOfDay.Hours).AddMinutes(h.TimeOfDay.Minutes);
+
+                num_duration.Value = h.Duration;
+            }
         }
 
         private void btn_habit_Click(object sender, RoutedEventArgs e) {
@@ -41,7 +70,19 @@ namespace Tabbot {
 
             using (SQLiteConnection connection = new(App.dbPath)) {
                 connection.CreateTable<Habit>();
-                connection.Insert(habit);
+
+                if (create) {
+                    connection.Insert(habit);
+                } else {
+                    var query = connection.Table<Habit>().Where(c => c.Id == updateID).SingleOrDefault();
+                    query.Title = habit.Title;
+                    query.Description = habit.Description;
+                    query.DaysOfTheWeek = habit.DaysOfTheWeek;
+                    query.TimeOfDay = habit.TimeOfDay;
+                    query.Duration = habit.Duration;
+
+                    connection.Update(query);
+                }
             }
 
             Close();

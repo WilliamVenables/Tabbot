@@ -1,0 +1,7 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Tabbot">
+    <BitmapImage x:Key="TabbotClose" UriSource="Assets/Close.png" />
+    <BitmapImage x:Key="TabbotEdit" UriSource="Assets/Edit.png" />
+    <BitmapImage x:Key="TabbotPlus" UriSource="Assets/Plus.png" />
+</ResourceDictionary>
