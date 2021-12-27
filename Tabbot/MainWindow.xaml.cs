@@ -392,6 +392,8 @@ namespace Tabbot {
             popup.ShowDialog();
 
             UpdateHabits();
+
+            ScheduleNextHabit();
         }
     }
 }
